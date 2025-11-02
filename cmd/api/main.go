@@ -38,12 +38,23 @@ func main() {
 	}
 
 	r := gin.Default()
+
+	// Basic health route
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok"})
+	})
+
+	// Register app routes (handlers)
 	handlers.RegisterRoutes(r, db)
 
+	// Swagger
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	addr := fmt.Sprintf(":%s", port)
-	r.Run(addr)
+	log.Printf("🚀 starting server on %s", addr)
+	if err := r.Run(addr); err != nil {
+		log.Fatalf("server error: %v", err)
+	}
 }
 
 func getenv(k, fallback string) string {

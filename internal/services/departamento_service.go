@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/danubiobwm/company-api/internal/models"
@@ -13,11 +14,8 @@ type DepartamentoService struct {
 	colaboradorRepo *repositories.ColaboradorRepository
 }
 
-func NewDepartamentoService(r *repositories.DepartamentoRepository, cr *repositories.ColaboradorRepository) *DepartamentoService {
-	return &DepartamentoService{
-		repo:            r,
-		colaboradorRepo: cr,
-	}
+func NewDepartamentoService(repo *repositories.DepartamentoRepository, colaboradorRepo *repositories.ColaboradorRepository) *DepartamentoService {
+	return &DepartamentoService{repo: repo, colaboradorRepo: colaboradorRepo}
 }
 
 func (s *DepartamentoService) Create(d *models.Departamento) error {
@@ -25,27 +23,27 @@ func (s *DepartamentoService) Create(d *models.Departamento) error {
 		return &DomainError{Status: 422, Message: "nome é obrigatório"}
 	}
 
-	if d.GerenteID == uuid.Nil {
-		return &DomainError{Status: 422, Message: "gerente_id é obrigatório"}
-	}
-
-	gerente, err := s.colaboradorRepo.GetByID(d.GerenteID)
+	count, err := s.repo.CountAll()
 	if err != nil {
 		return err
 	}
-	if gerente == nil {
-		return &DomainError{Status: 422, Message: "gerente não encontrado"}
-	}
 
-	if d.DepartamentoSuperiorID != nil {
-		superior, err := s.repo.GetByID(*d.DepartamentoSuperiorID)
+	// Permitir criar o primeiro departamento sem gerente
+	if d.GerenteID == uuid.Nil {
+		if count > 0 {
+			return &DomainError{Status: 422, Message: "gerente é obrigatório"}
+		}
+	} else {
+		gerente, err := s.colaboradorRepo.GetByID(d.GerenteID)
 		if err != nil {
 			return err
 		}
-		if superior == nil {
-			return &DomainError{Status: 422, Message: "departamento_superior não encontrado"}
+		if gerente == nil {
+			return &DomainError{Status: 404, Message: "gerente não encontrado"}
 		}
+	}
 
+	if d.DepartamentoSuperiorID != nil {
 		ok, err := s.checkNoCycle(d.ID, *d.DepartamentoSuperiorID)
 		if err != nil {
 			return err
@@ -63,72 +61,35 @@ func (s *DepartamentoService) Create(d *models.Departamento) error {
 	return s.repo.Create(d)
 }
 
-func (s *DepartamentoService) Update(d *models.Departamento) error {
-	if strings.TrimSpace(d.Nome) == "" {
-		return &DomainError{Status: 422, Message: "nome é obrigatório"}
-	}
-
-	if d.GerenteID == uuid.Nil {
-		return &DomainError{Status: 422, Message: "gerente_id é obrigatório"}
-	}
-
-	gerente, err := s.colaboradorRepo.GetByID(d.GerenteID)
+func (s *DepartamentoService) checkNoCycle(depID uuid.UUID, superiorID uuid.UUID) (bool, error) {
+	superior, err := s.repo.GetByID(superiorID)
 	if err != nil {
-		return err
+		return false, err
 	}
-	if gerente == nil {
-		return &DomainError{Status: 422, Message: "gerente não encontrado"}
+	if superior == nil {
+		return false, errors.New("departamento superior inexistente")
 	}
-
-	if d.DepartamentoSuperiorID != nil {
-		superior, err := s.repo.GetByID(*d.DepartamentoSuperiorID)
-		if err != nil {
-			return err
-		}
-		if superior == nil {
-			return &DomainError{Status: 422, Message: "departamento_superior não encontrado"}
-		}
-
-		ok, err := s.checkNoCycle(d.ID, *d.DepartamentoSuperiorID)
-		if err != nil {
-			return err
-		}
-		if !ok {
-			return &DomainError{Status: 422, Message: "atribuir esse departamento superior geraria ciclo"}
-		}
-	}
-
-	return s.repo.Update(d)
-}
-
-func (s *DepartamentoService) checkNoCycle(child, parent uuid.UUID) (bool, error) {
-	cur := parent
-	for {
-		dept, err := s.repo.GetByID(cur)
-		if err != nil {
-			return false, err
-		}
-		if dept == nil {
-			break
-		}
-		if dept.ID == child {
+	if superior.DepartamentoSuperiorID != nil {
+		if *superior.DepartamentoSuperiorID == depID {
 			return false, nil
 		}
-		if dept.DepartamentoSuperiorID == nil {
-			break
-		}
-		cur = *dept.DepartamentoSuperiorID
+		return s.checkNoCycle(depID, *superior.DepartamentoSuperiorID)
 	}
 	return true, nil
 }
 
+func (s *DepartamentoService) GetAll() ([]models.Departamento, error) {
+	return s.repo.GetAll()
+}
+
+func (s *DepartamentoService) GetByID(id uuid.UUID) (*models.Departamento, error) {
+	return s.repo.GetByID(id)
+}
+
+func (s *DepartamentoService) Update(d *models.Departamento) error {
+	return s.repo.Update(d)
+}
+
 func (s *DepartamentoService) Delete(id uuid.UUID) error {
-	dept, err := s.repo.GetByID(id)
-	if err != nil {
-		return err
-	}
-	if dept == nil {
-		return &DomainError{Status: 404, Message: "departamento não encontrado"}
-	}
 	return s.repo.Delete(id)
 }

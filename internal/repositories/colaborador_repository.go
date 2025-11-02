@@ -15,9 +15,12 @@ type ColaboradorRepository struct {
 func NewColaboradorRepository(db *gorm.DB) *ColaboradorRepository {
 	return &ColaboradorRepository{db: db}
 }
+
+// DB returns the underlying gorm DB (read-only access)
 func (r *ColaboradorRepository) DB() *gorm.DB {
 	return r.db
 }
+
 func (r *ColaboradorRepository) Create(c *models.Colaborador) error {
 	return r.db.Create(c).Error
 }
@@ -36,6 +39,17 @@ func (r *ColaboradorRepository) GetByID(id uuid.UUID) (*models.Colaborador, erro
 func (r *ColaboradorRepository) GetByCPF(cpf string) (*models.Colaborador, error) {
 	var c models.Colaborador
 	if err := r.db.First(&c, "cpf = ?", cpf).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &c, nil
+}
+
+func (r *ColaboradorRepository) GetByRG(rg string) (*models.Colaborador, error) {
+	var c models.Colaborador
+	if err := r.db.First(&c, "rg = ?", rg).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}

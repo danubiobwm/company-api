@@ -35,8 +35,11 @@ func (s *ColaboradorService) Create(c *models.Colaborador) error {
 	}
 
 	if c.RG != nil && *c.RG != "" {
-		var byRG models.Colaborador
-		if err := s.repo.DB().Where("rg = ?", *c.RG).First(&byRG).Error; err == nil {
+		existingRG, err := s.repo.GetByRG(*c.RG)
+		if err != nil {
+			return err
+		}
+		if existingRG != nil {
 			return &DomainError{Status: 409, Message: "rg já cadastrado"}
 		}
 	}
@@ -50,8 +53,7 @@ func (s *ColaboradorService) Create(c *models.Colaborador) error {
 	}
 
 	if c.ID == uuid.Nil {
-		id, _ := uuid.NewV7()
-		c.ID = id
+		c.ID = uuid.New()
 	}
 
 	if err := s.repo.Create(c); err != nil {
@@ -68,6 +70,7 @@ type DomainError struct {
 func (e *DomainError) Error() string { return e.Message }
 
 func validateCPF(c string) bool {
+	// remove non-digits
 	s := ""
 	for _, r := range c {
 		if r >= '0' && r <= '9' {
@@ -77,6 +80,7 @@ func validateCPF(c string) bool {
 	if len(s) != 11 {
 		return false
 	}
+	// reject sequences like 11111111111
 	seq := true
 	for i := 1; i < 11; i++ {
 		if s[i] != s[0] {

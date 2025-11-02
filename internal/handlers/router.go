@@ -11,6 +11,5 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 		registerColaboradorRoutes(v1, db)
 		registerDepartamentoRoutes(v1, db)
 		registerGerentesRoutes(v1, db)
-		registerHealthRoutes(r)
 	}
 }
