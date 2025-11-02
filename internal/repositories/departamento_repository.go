@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"errors"
+
 	"github.com/danubiobwm/company-api/internal/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -27,28 +29,28 @@ func (r *DepartamentoRepository) Delete(id uuid.UUID) error {
 }
 
 func (r *DepartamentoRepository) GetByID(id uuid.UUID) (*models.Departamento, error) {
-	var dep models.Departamento
-	if err := r.db.Preload("Gerente").First(&dep, "id = ?", id).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
+	var d models.Departamento
+	if err := r.db.Preload("Gerente").First(&d, "id = ?", id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
 		return nil, err
 	}
-	return &dep, nil
+	return &d, nil
 }
 
 func (r *DepartamentoRepository) GetAll() ([]models.Departamento, error) {
-	var deps []models.Departamento
-	if err := r.db.Preload("Gerente").Find(&deps).Error; err != nil {
+	var list []models.Departamento
+	if err := r.db.Preload("Gerente").Find(&list).Error; err != nil {
 		return nil, err
 	}
-	return deps, nil
+	return list, nil
 }
 
 func (r *DepartamentoRepository) CountAll() (int64, error) {
-	var count int64
-	if err := r.db.Model(&models.Departamento{}).Count(&count).Error; err != nil {
+	var cnt int64
+	if err := r.db.Model(&models.Departamento{}).Count(&cnt).Error; err != nil {
 		return 0, err
 	}
-	return count, nil
+	return cnt, nil
 }

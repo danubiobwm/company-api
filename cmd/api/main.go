@@ -12,19 +12,14 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title Company API
-// @version 1.0
-// @description API para gerenciar colaboradores e departamentos
-// @host localhost:8080
-// @BasePath /api/v1
 func main() {
 	port := os.Getenv("APP_PORT")
 	if port == "" {
 		port = "8080"
 	}
 
-	dbCfg := repositories.DBConfig{
-		Host:     getenv("DATABASE_HOST", "localhost"),
+	cfg := repositories.DBConfig{
+		Host:     getenv("DATABASE_HOST", "db"),
 		Port:     getenv("DATABASE_PORT", "5432"),
 		User:     getenv("DATABASE_USER", "postgres"),
 		Password: getenv("DATABASE_PASSWORD", "postgres"),
@@ -32,26 +27,24 @@ func main() {
 		SSLMode:  getenv("DATABASE_SSLMODE", "disable"),
 	}
 
-	db, err := repositories.NewGormDB(dbCfg)
+	db, err := repositories.NewGormDB(cfg)
 	if err != nil {
 		log.Fatalf("failed to connect db: %v", err)
 	}
 
 	r := gin.Default()
-
-	// Basic health route
+	// health
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
 	})
 
-	// Register app routes (handlers)
 	handlers.RegisterRoutes(r, db)
 
-	// Swagger
+	// swagger (if docs generated)
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	addr := fmt.Sprintf(":%s", port)
-	log.Printf("🚀 starting server on %s", addr)
+	log.Printf("listening on %s", addr)
 	if err := r.Run(addr); err != nil {
 		log.Fatalf("server error: %v", err)
 	}

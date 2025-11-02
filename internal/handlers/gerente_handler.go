@@ -9,7 +9,7 @@ import (
 )
 
 func registerGerentesRoutes(rg *gin.RouterGroup, db *gorm.DB) {
-
+	// GET /api/v1/gerentes/:id/colaboradores
 	rg.GET("/gerentes/:id/colaboradores", func(c *gin.Context) {
 		gerenteID, err := uuid.Parse(c.Param("id"))
 		if err != nil {
@@ -17,14 +17,9 @@ func registerGerentesRoutes(rg *gin.RouterGroup, db *gorm.DB) {
 			return
 		}
 
+		// find department where this gerente_id is set
 		var deptID uuid.UUID
-		err = db.Raw(`
-			SELECT d.id
-			FROM departamentos d
-			WHERE d.gerente_id = ?
-			LIMIT 1;
-		`, gerenteID).Scan(&deptID).Error
-		if err != nil {
+		if err := db.Raw("SELECT id FROM departamentos WHERE gerente_id = ? LIMIT 1", gerenteID).Scan(&deptID).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -33,11 +28,12 @@ func registerGerentesRoutes(rg *gin.RouterGroup, db *gorm.DB) {
 			return
 		}
 
-		type Result struct {
+		// fetch recursively all sub-departments using CTE
+		type DeptRes struct {
 			ID   uuid.UUID `json:"id"`
 			Nome string    `json:"nome"`
 		}
-		var depts []Result
+		var depts []DeptRes
 		sql := `
 		WITH RECURSIVE subdeps AS (
 			SELECT id, nome, departamento_superior_id
@@ -54,29 +50,18 @@ func registerGerentesRoutes(rg *gin.RouterGroup, db *gorm.DB) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-
-		var deptIDs []uuid.UUID
+		var ids []uuid.UUID
 		for _, d := range depts {
-			deptIDs = append(deptIDs, d.ID)
+			ids = append(ids, d.ID)
 		}
-
-		type Colab struct {
-			ID             uuid.UUID `json:"id"`
-			Nome           string    `json:"nome"`
-			CPF            string    `json:"cpf"`
-			DepartamentoID uuid.UUID `json:"departamento_id"`
+		// fetch collaborators in these departments
+		var colabs []map[string]interface{}
+		if len(ids) > 0 {
+			if err := db.Table("colaboradores").Where("departamento_id IN ?", ids).Find(&colabs).Error; err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
 		}
-		var colaboradores []Colab
-		if err := db.Table("colaboradores").Where("departamento_id IN ?", deptIDs).Find(&colaboradores).Error; err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{
-			"gerente_id":    gerenteID,
-			"departamentos": depts,
-			"colaboradores": colaboradores,
-			"total_colabs":  len(colaboradores),
-		})
+		c.JSON(http.StatusOK, gin.H{"gerente_id": gerenteID, "departamentos": depts, "colaboradores": colabs})
 	})
 }

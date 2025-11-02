@@ -1,102 +1,110 @@
-##
-## Use este arquivo no VSCode com a extensão REST Client (humao.rest-client)
-## Certifique-se de que a API está rodando em http://localhost:8080
-##
-
+###
+##  Use este arquivo no VSCode com a extensão REST Client (`humao.rest-client`)
+## Base URL da API
 @baseUrl = http://localhost:8080/api/v1
-@contentType = application/json
+@cpf = 00615075398
 
-### 🩺 Health Check
+###
+
+# ====================================
+#  Health Check
+# ====================================
 GET {{baseUrl}}/health
-Content-Type: {{contentType}}
+Content-Type: application/json
 
+###
 
-### 🏢 Listar todos os departamentos
-GET {{baseUrl}}/departamentos
-Content-Type: {{contentType}}
+# ====================================
+#  Departamentos
+# ====================================
 
-
-### 🔍 Buscar departamento por ID
-GET {{baseUrl}}/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac
-Content-Type: {{contentType}}
-
-
-### ➕ Criar novo departamento
+##  Criar novo departamento
 POST {{baseUrl}}/departamentos
-Content-Type: {{contentType}}
+Content-Type: application/json
 
 {
-  "nome": "Financeiro",
-  "descricao": "Departamento responsável pela gestão financeira"
+  "nome": "Tecnologia da Informação",
+  "sigla": "TI"
 }
 
+###
 
-### ✏️ Atualizar departamento existente
+##  Listar todos os departamentos
+GET {{baseUrl}}/departamentos
+Content-Type: application/json
+
+###
+
+##  Buscar departamento por ID
+# Substitua o ID abaixo pelo retornado na criação
+GET {{baseUrl}}/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac
+Content-Type: application/json
+
+###
+
+##  Atualizar departamento
 PUT {{baseUrl}}/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac
-Content-Type: {{contentType}}
+Content-Type: application/json
 
 {
-  "nome": "Engenharia de Software e Dados",
-  "descricao": "Departamento atualizado"
+  "nome": "Departamento de TI",
+  "sigla": "INFRA"
 }
 
+###
 
-### ❌ Excluir departamento
-DELETE {{baseUrl}}/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ad
-Content-Type: {{contentType}}
+##  Deletar departamento
+DELETE {{baseUrl}}/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac
+Content-Type: application/json
 
+###
 
----
-## 👥 COLABORADORES
----
+# ====================================
+#  Colaboradores
+# ====================================
 
-###  Listar colaboradores
-GET {{baseUrl}}/colaboradores
-Content-Type: {{contentType}}
-
-
-###  Buscar colaborador por ID
-GET {{baseUrl}}/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa6aa
-Content-Type: {{contentType}}
-
-
-###  Criar colaborador
+##  Criar novo colaborador
 POST {{baseUrl}}/colaboradores
-Content-Type: {{contentType}}
+Content-Type: application/json
 
 {
-  "nome": "Danubio Martins",
-  "cpf": "00615075398",
-  "rg": "PR987654",
-  "cargo": "Arquiteto de Software",
-  "salario": 12000.00,
+  "nome": "Danubio Silva",
+  "cpf": "{{cpf}}",
+  "rg": "PR556677",
+  "cargo": "Desenvolvedor Backend",
   "departamento_id": "018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac"
 }
 
+###
 
-###  Atualizar colaborador
-PUT {{baseUrl}}/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa6aa
-Content-Type: {{contentType}}
+GET {{baseUrl}}/colaboradores
+Content-Type: application/json
+
+###
+
+##  Buscar colaborador por ID
+GET {{baseUrl}}/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa6ab
+Content-Type: application/json
+
+###
+
+##  Atualizar colaborador
+PUT {{baseUrl}}/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa6ab
+Content-Type: application/json
 
 {
-  "cargo": "Tech Lead",
-  "salario": 13500.00
+  "nome": "Danubio Batista",
+  "cpf": "{{cpf}}",
+  "rg": "PR556677",
+  "cargo": "Líder Técnico",
+  "departamento_id": "018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac"
 }
 
+###
 
-###  Excluir colaborador
+##  Deletar colaborador
 DELETE {{baseUrl}}/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa6ab
-Content-Type: {{contentType}}
+Content-Type: application/json
 
-
----
-##  GERENTES
----
-
-###  Listar gerentes
-GET {{baseUrl}}/gerentes
-Content-Type: {{contentType}}
-
-
-###  Buscar gerente por ID
-GET {{baseUrl}}/gerentes/018f3c3e-5c79-7b21
+###
+# ====================================
