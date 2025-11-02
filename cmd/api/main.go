@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/danubiobwm/company-api/internal/handlers"
 	"github.com/danubiobwm/company-api/internal/repositories"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

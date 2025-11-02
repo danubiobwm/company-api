@@ -15,7 +15,9 @@ type ColaboradorRepository struct {
 func NewColaboradorRepository(db *gorm.DB) *ColaboradorRepository {
 	return &ColaboradorRepository{db: db}
 }
-
+func (r *ColaboradorRepository) DB() *gorm.DB {
+	return r.db
+}
 func (r *ColaboradorRepository) Create(c *models.Colaborador) error {
 	return r.db.Create(c).Error
 }
