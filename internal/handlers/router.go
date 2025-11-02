@@ -4,6 +4,8 @@ import (
 	"github.com/danubiobwm/company-api/internal/repositories"
 	"github.com/danubiobwm/company-api/internal/services"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 )
 
@@ -30,4 +32,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	// Registrar rotas
 	deptHandler.RegisterRoutes(api)
 	colabHandler.RegisterRoutes(api)
+	// Swagger
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 }

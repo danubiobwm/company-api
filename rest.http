@@ -1,110 +1,87 @@
-###
-##  Use este arquivo no VSCode com a extensão REST Client (`humao.rest-client`)
-## Base URL da API
-@baseUrl = http://localhost:8080/api/v1
-@cpf = 00615075398
-
-###
-
-# ====================================
-#  Health Check
-# ====================================
-GET {{baseUrl}}/health
+### Health check
+GET http://localhost:8080/api/v1/health
 Content-Type: application/json
 
 ###
 
-# ====================================
-#  Departamentos
-# ====================================
+### Listar todos os departamentos
+GET http://localhost:8080/api/v1/departamentos
+Content-Type: application/json
 
-##  Criar novo departamento
-POST {{baseUrl}}/departamentos
+###
+
+### Buscar departamento por ID (Tecnologia da Informação)
+GET http://localhost:8080/api/v1/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac
+Content-Type: application/json
+
+###
+
+### Criar novo departamento
+POST http://localhost:8080/api/v1/departamentos
 Content-Type: application/json
 
 {
-  "nome": "Tecnologia da Informação",
-  "sigla": "TI"
+  "nome": "Financeiro",
+  "descricao": "Departamento responsável pelas finanças da empresa"
 }
 
 ###
 
-##  Listar todos os departamentos
-GET {{baseUrl}}/departamentos
-Content-Type: application/json
-
-###
-
-##  Buscar departamento por ID
-# Substitua o ID abaixo pelo retornado na criação
-GET {{baseUrl}}/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac
-Content-Type: application/json
-
-###
-
-##  Atualizar departamento
-PUT {{baseUrl}}/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac
+### Atualizar departamento existente
+PUT http://localhost:8080/api/v1/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac
 Content-Type: application/json
 
 {
-  "nome": "Departamento de TI",
-  "sigla": "INFRA"
+  "nome": "Tecnologia da Informação e Inovação",
+  "descricao": "Departamento atualizado de TI com foco em inovação"
 }
 
 ###
 
-##  Deletar departamento
-DELETE {{baseUrl}}/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac
+### Excluir departamento
+DELETE http://localhost:8080/api/v1/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ad
 Content-Type: application/json
 
 ###
 
-# ====================================
-#  Colaboradores
-# ====================================
+### Listar todos os colaboradores
+GET http://localhost:8080/api/v1/colaboradores
+Content-Type: application/json
 
-##  Criar novo colaborador
-POST {{baseUrl}}/colaboradores
+###
+
+### Buscar colaborador por ID (João Silva)
+GET http://localhost:8080/api/v1/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa6aa
+Content-Type: application/json
+
+###
+
+### Criar novo colaborador
+POST http://localhost:8080/api/v1/colaboradores
 Content-Type: application/json
 
 {
-  "nome": "Danubio Silva",
-  "cpf": "{{cpf}}",
-  "rg": "PR556677",
-  "cargo": "Desenvolvedor Backend",
+  "nome": "Carlos Santos",
+  "cpf": "98765432100",
+  "rg": "RJ445566",
   "departamento_id": "018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac"
 }
 
 ###
 
-GET {{baseUrl}}/colaboradores
-Content-Type: application/json
-
-###
-
-##  Buscar colaborador por ID
-GET {{baseUrl}}/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa6ab
-Content-Type: application/json
-
-###
-
-##  Atualizar colaborador
-PUT {{baseUrl}}/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa6ab
+### Atualizar colaborador existente
+PUT http://localhost:8080/api/v1/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa6aa
 Content-Type: application/json
 
 {
-  "nome": "Danubio Batista",
-  "cpf": "{{cpf}}",
+  "nome": "João da Silva",
+  "cpf": "00615075398",
   "rg": "PR556677",
-  "cargo": "Líder Técnico",
   "departamento_id": "018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac"
 }
 
 ###
 
-##  Deletar colaborador
-DELETE {{baseUrl}}/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa6ab
+### Excluir colaborador
+DELETE http://localhost:8080/api/v1/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa6ab
 Content-Type: application/json
-
-###
-# ====================================

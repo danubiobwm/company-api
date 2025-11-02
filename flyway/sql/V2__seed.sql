@@ -1,24 +1,15 @@
--- Inserir departamentos
-INSERT INTO departamentos (nome, descricao)
+-- V2__seed.sql
+INSERT INTO departamentos (id, nome, descricao)
 VALUES
-  ('Tecnologia da Informação', 'Responsável por infraestrutura, sistemas e suporte.'),
-  ('Recursos Humanos', 'Gestão de pessoas e processos seletivos.'),
-  ('Financeiro', 'Controle de fluxo de caixa, pagamentos e investimentos.'),
-  ('Marketing', 'Divulgação e campanhas da empresa.');
+('018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac', 'Tecnologia da Informação', 'Responsável por infraestrutura e sistemas internos'),
+('018f3c3e-5c79-7b21-b7e1-d45f80cfa5ad', 'Recursos Humanos', 'Responsável por recrutamento e gestão de pessoas');
 
--- Inserir colaboradores
-INSERT INTO colaboradores (nome, cpf, rg, cargo, salario, departamento_id)
+INSERT INTO colaboradores (id, nome, cpf, rg, departamento_id)
 VALUES
-  ('Danubio Martins', '00615075398', 'PR987654', 'Arquiteto de Software', 12000.00,
-    (SELECT id FROM departamentos WHERE nome = 'Tecnologia da Informação' LIMIT 1)),
-  ('João Silva', '11122233344', 'SP123456', 'Analista de RH', 5500.00,
-    (SELECT id FROM departamentos WHERE nome = 'Recursos Humanos' LIMIT 1)),
-  ('Maria Souza', '22233344455', 'RJ654321', 'Analista Financeiro', 6000.00,
-    (SELECT id FROM departamentos WHERE nome = 'Financeiro' LIMIT 1));
+('018f3c3e-5c79-7b21-b7e1-d45f80cfa6aa', 'João Silva', '00615075398', 'PR556677', '018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac'),
+('018f3c3e-5c79-7b21-b7e1-d45f80cfa6ab', 'Maria Oliveira', '12345678901', 'SP998877', '018f3c3e-5c79-7b21-b7e1-d45f80cfa5ad');
 
--- Inserir gerente
-INSERT INTO gerentes (colaborador_id, departamento_id)
-VALUES (
-  (SELECT id FROM colaboradores WHERE cpf = '00615075398' LIMIT 1),
-  (SELECT id FROM departamentos WHERE nome = 'Tecnologia da Informação' LIMIT 1)
-);
+-- Define João Silva como gerente do TI
+UPDATE departamentos
+SET gerente_id = '018f3c3e-5c79-7b21-b7e1-d45f80cfa6aa'
+WHERE id = '018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac';
