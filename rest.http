@@ -1,0 +1,113 @@
+###
+## Use este arquivo no VSCode com a extensão "REST Client" (humao.rest-client)
+## Ajuste a variável {{baseUrl}} se estiver usando uma porta diferente (ex: 8080)
+###
+
+@baseUrl = http://localhost:8080/api/v1
+@contentType = application/json
+
+
+###  Health Check
+GET http://localhost:8080/health
+Content-Type: {{contentType}}
+
+### =====================================================================
+### COLABORADORES
+### =====================================================================
+
+###  Criar Colaborador
+POST {{baseUrl}}/colaboradores
+Content-Type: {{contentType}}
+
+{
+  "nome": "Ana Silva",
+  "cpf": "12345678909",
+  "rg": "MG1234567",
+  "departamento_id": "018f3c3e-5c79-7b21-b7e1-d45f80cfa5ab"
+}
+
+###  Buscar Colaborador por ID
+GET {{baseUrl}}/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ab
+Content-Type: {{contentType}}
+
+### Atualizar Colaborador
+PUT {{baseUrl}}/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ab
+Content-Type: {{contentType}}
+
+{
+  "nome": "Ana Maria Silva",
+  "rg": "MG1234567",
+  "departamento_id": "018f3c3e-5c79-7b21-b7e1-d45f80cfa5ab"
+}
+
+###  Deletar Colaborador
+DELETE {{baseUrl}}/colaboradores/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ab
+Content-Type: {{contentType}}
+
+###  Listar Colaboradores (com filtros)
+POST {{baseUrl}}/colaboradores/listar
+Content-Type: {{contentType}}
+
+{
+  "filtros": {
+    "nome": "Ana",
+    "cpf": "12345678909",
+    "departamento_id": "018f3c3e-5c79-7b21-b7e1-d45f80cfa5ab"
+  },
+  "pagina": 1,
+  "limite": 10
+}
+
+### =====================================================================
+###  DEPARTAMENTOS
+### =====================================================================
+
+###  Criar Departamento
+POST {{baseUrl}}/departamentos
+Content-Type: {{contentType}}
+
+{
+  "nome": "Tecnologia da Informação",
+  "gerente_id": "018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac",
+  "departamento_superior_id": null
+}
+
+###  Buscar Departamento por ID (com hierarquia)
+GET {{baseUrl}}/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ab
+Content-Type: {{contentType}}
+
+### Atualizar Departamento
+PUT {{baseUrl}}/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ab
+Content-Type: {{contentType}}
+
+{
+  "nome": "TI Corporativa",
+  "gerente_id": "018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac",
+  "departamento_superior_id": null
+}
+
+###  Deletar Departamento
+DELETE {{baseUrl}}/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ab
+Content-Type: {{contentType}}
+
+###  Listar Departamentos (com filtros)
+POST {{baseUrl}}/departamentos/listar
+Content-Type: {{contentType}}
+
+{
+  "filtros": {
+    "nome": "Tecnologia",
+    "gerente_nome": "Ana Silva",
+    "departamento_superior_id": null
+  },
+  "pagina": 1,
+  "limite": 10
+}
+
+### =====================================================================
+###  GERENTES
+### =====================================================================
+
+###  Listar Colaboradores de um Gerente (recursivo)
+GET {{baseUrl}}/gerentes/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac/colaboradores
+Content-Type: {{contentType}}
