@@ -4,67 +4,74 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	_ "github.com/danubiobwm/company-api/docs"
 	"github.com/danubiobwm/company-api/internal/handlers"
 	"github.com/danubiobwm/company-api/internal/repositories"
 	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/gorm"
 )
 
-// @title Company API
-// @version 1.0
-// @description API REST para gerenciamento de colaboradores e departamentos.
-// @termsOfService http://swagger.io/terms/
-// @contact.name Danubio Backend Team
-// @contact.email suporte@company.com
-// @license.name MIT
-// @host localhost:8080
-// @BasePath /api/v1
+type Config struct {
+	AppPort string
+	DB      repositories.DBConfig
+}
+
+func loadConfig() Config {
+	return Config{
+		AppPort: getenv("APP_PORT", "8080"),
+		DB: repositories.DBConfig{
+			Host:     getenv("DATABASE_HOST", "db"),
+			Port:     getenv("DATABASE_PORT", "5432"),
+			User:     getenv("DATABASE_USER", "postgres"),
+			Password: getenv("DATABASE_PASSWORD", "postgres"),
+			DBName:   getenv("DATABASE_NAME", "companydb"),
+			SSLMode:  getenv("DATABASE_SSLMODE", "disable"),
+		},
+	}
+}
+
 func main() {
-	port := os.Getenv("APP_PORT")
-	if port == "" {
-		port = "8080"
-	}
+	config := loadConfig()
 
-	cfg := repositories.DBConfig{
-		Host:     getenv("DATABASE_HOST", "db"),
-		Port:     getenv("DATABASE_PORT", "5432"),
-		User:     getenv("DATABASE_USER", "postgres"),
-		Password: getenv("DATABASE_PASSWORD", "postgres"),
-		DBName:   getenv("DATABASE_NAME", "companydb"),
-		SSLMode:  getenv("DATABASE_SSLMODE", "disable"),
+	var db *gorm.DB
+	var err error
+	maxRetries := 5
+	for i := 0; i < maxRetries; i++ {
+		db, err = repositories.NewGormDB(config.DB)
+		if err == nil {
+			break
+		}
+		log.Printf("Failed to connect to database (attempt %d/%d): %v", i+1, maxRetries, err)
+		time.Sleep(5 * time.Second)
 	}
-
-	db, err := repositories.NewGormDB(cfg)
 	if err != nil {
-		log.Fatalf("failed to connect db: %v", err)
+		log.Fatalf("Failed to connect to database after %d attempts: %v", maxRetries, err)
+	}
+
+	r := setupRouter(db)
+
+	addr := fmt.Sprintf(":%s", config.AppPort)
+	log.Printf("Server starting on %s", addr)
+	if err := r.Run(addr); err != nil {
+		log.Fatalf("Server error: %v", err)
+	}
+}
+
+func setupRouter(db *gorm.DB) *gin.Engine {
+	if os.Getenv("GIN_MODE") == "release" {
+		gin.SetMode(gin.ReleaseMode)
 	}
 
 	r := gin.Default()
-	// HealthCheck godoc
-	// @Summary Health check
-	// @Description Check if the API is running
-	// @Tags health
-	// @Accept json
-	// @Produce json
-	// @Success 200 {object} map[string]string
-	// @Router /health [get]
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "ok"})
-	})
+
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
 
 	handlers.RegisterRoutes(r, db)
 
-	// swagger (if docs generated)
-	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
-	addr := fmt.Sprintf(":%s", port)
-	log.Printf("listening on %s", addr)
-	if err := r.Run(addr); err != nil {
-		log.Fatalf("server error: %v", err)
-	}
+	return r
 }
 
 func getenv(k, fallback string) string {

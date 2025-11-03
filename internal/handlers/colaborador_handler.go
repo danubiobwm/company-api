@@ -36,7 +36,7 @@ func (h *ColaboradorHandler) RegisterRoutes(rg *gin.RouterGroup) {
 // @Param limit query int false "Items per page" default(100)
 // @Success 200 {object} map[string]interface{} "Lista de colaboradores e total"
 // @Failure 500 {object} map[string]string "Erro interno"
-// @Router /colaboradores [get]
+// @Router /api/v1/colaboradores [get]
 func (h *ColaboradorHandler) GetAll(c *gin.Context) {
 	filters := make(map[string]interface{})
 	colabs, total, err := h.service.List(filters, 1, 100)
@@ -61,7 +61,7 @@ func (h *ColaboradorHandler) GetAll(c *gin.Context) {
 // @Failure 400 {object} map[string]string "ID inválido"
 // @Failure 404 {object} map[string]string "Colaborador não encontrado"
 // @Failure 500 {object} map[string]string "Erro interno"
-// @Router /colaboradores/{id} [get]
+// @Router /api/v1/colaboradores/{id} [get]
 func (h *ColaboradorHandler) GetByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -92,7 +92,7 @@ func (h *ColaboradorHandler) GetByID(c *gin.Context) {
 // @Success 201 {object} models.Colaborador
 // @Failure 400 {object} map[string]string "Erro de validação"
 // @Failure 422 {object} map[string]string "Entidade não processável"
-// @Router /colaboradores [post]
+// @Router /api/v1/colaboradores [post]
 func (h *ColaboradorHandler) Create(c *gin.Context) {
 	var colab models.Colaborador
 	if err := c.ShouldBindJSON(&colab); err != nil {
@@ -118,7 +118,7 @@ func (h *ColaboradorHandler) Create(c *gin.Context) {
 // @Success 200 {object} models.Colaborador
 // @Failure 400 {object} map[string]string "Erro de validação"
 // @Failure 422 {object} map[string]string "Entidade não processável"
-// @Router /colaboradores/{id} [put]
+// @Router /api/v1/colaboradores/{id} [put]
 func (h *ColaboradorHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -151,7 +151,7 @@ func (h *ColaboradorHandler) Update(c *gin.Context) {
 // @Success 204 "No Content"
 // @Failure 400 {object} map[string]string "ID inválido"
 // @Failure 500 {object} map[string]string "Erro interno"
-// @Router /colaboradores/{id} [delete]
+// @Router /api/v1/colaboradores/{id} [delete]
 func (h *ColaboradorHandler) Delete(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)

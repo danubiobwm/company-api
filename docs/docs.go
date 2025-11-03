@@ -9,20 +9,13 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "Danubio Backend Team",
-            "email": "suporte@company.com"
-        },
-        "license": {
-            "name": "MIT"
-        },
+        "contact": {},
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/colaboradores": {
+        "/api/v1/colaboradores": {
             "get": {
                 "description": "Get a paginated list of colaboradores with optional filtering",
                 "consumes": [
@@ -121,7 +114,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/colaboradores/{id}": {
+        "/api/v1/colaboradores/{id}": {
             "get": {
                 "description": "Get detailed information about a specific colaborador",
                 "consumes": [
@@ -282,7 +275,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/departamentos": {
+        "/api/v1/departamentos": {
             "get": {
                 "description": "Get a list of all departamentos",
                 "consumes": [
@@ -306,9 +299,12 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Erro interno",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -344,21 +340,27 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Erro de validação",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "422": {
-                        "description": "Unprocessable Entity",
+                        "description": "Entidade não processável",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
             }
         },
-        "/departamentos/{id}": {
+        "/api/v1/departamentos/{id}": {
             "get": {
                 "description": "Get detailed information about a specific departamento",
                 "consumes": [
@@ -388,21 +390,30 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "ID inválido",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "404": {
-                        "description": "Not Found",
+                        "description": "Departamento não encontrado",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Erro interno",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -445,15 +456,21 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Erro de validação",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "422": {
-                        "description": "Unprocessable Entity",
+                        "description": "Entidade não processável",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -484,21 +501,27 @@ const docTemplate = `{
                         "description": "No Content"
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "ID inválido",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Erro interno",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
             }
         },
-        "/gerentes/{id}/colaboradores": {
+        "/api/v1/gerentes/{id}/colaboradores": {
             "get": {
                 "description": "Get all colaboradores under a gerente's department hierarchy (including sub-departments)",
                 "consumes": [
@@ -548,7 +571,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/health": {
+        "/api/v1/health": {
             "get": {
                 "description": "Retorna o status de saúde da API",
                 "produces": [
@@ -713,12 +736,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/api/v1",
+	Version:          "",
+	Host:             "",
+	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Company API",
-	Description:      "API REST para gerenciamento de colaboradores e departamentos.",
+	Title:            "",
+	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

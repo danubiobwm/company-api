@@ -27,7 +27,7 @@ func (h *HealthHandler) RegisterRoutes(rg *gin.RouterGroup) {
 // @Tags health
 // @Produce json
 // @Success 200 {object} HealthResponse
-// @Router /health [get]
+// @Router /api/v1/health [get]
 func (h *HealthHandler) HealthCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, HealthResponse{Status: "ok"})
 }

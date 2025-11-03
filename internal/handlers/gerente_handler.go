@@ -27,7 +27,6 @@ type ColaboradorSummary struct {
 	Name           string    `json:"name" example:"John Doe"`
 	Email          string    `json:"email" example:"john.doe@company.com"`
 	DepartamentoID uuid.UUID `json:"departamento_id" example:"123e4567-e89b-12d3-a456-426614174000"`
-	// Add other relevant fields as needed
 }
 
 // ErrorResponse represents an error response
@@ -36,8 +35,8 @@ type ErrorResponse struct {
 	Message string `json:"message" example:"Invalid input data"`
 }
 
-func registerGerentesRoutes(rg *gin.RouterGroup, db *gorm.DB) {
-	// GET /api/v1/gerentes/:id/colaboradores
+// RegisterGerentesRoutes registra as rotas relacionadas a gerentes
+func RegisterGerentesRoutes(rg *gin.RouterGroup, db *gorm.DB) {
 	rg.GET("/gerentes/:id/colaboradores", getGerenteColaboradores(db))
 }
 
@@ -52,7 +51,7 @@ func registerGerentesRoutes(rg *gin.RouterGroup, db *gorm.DB) {
 // @Failure 400 {object} ErrorResponse
 // @Failure 404 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
-// @Router /gerentes/{id}/colaboradores [get]
+// @Router /api/v1/gerentes/{id}/colaboradores [get]
 func getGerenteColaboradores(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		gerenteID, err := uuid.Parse(c.Param("id"))
@@ -61,7 +60,7 @@ func getGerenteColaboradores(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		// find department where this gerente_id is set
+		// Find the department where this gerente_id is set
 		var deptID uuid.UUID
 		if err := db.Raw("SELECT id FROM departamentos WHERE gerente_id = ? LIMIT 1", gerenteID).Scan(&deptID).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -72,7 +71,7 @@ func getGerenteColaboradores(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		// fetch recursively all sub-departments using CTE
+		// Fetch recursively all sub-departments using CTE
 		type DeptRes struct {
 			ID   uuid.UUID `json:"id"`
 			Nome string    `json:"nome"`
@@ -94,11 +93,13 @@ func getGerenteColaboradores(db *gorm.DB) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
+
 		var ids []uuid.UUID
 		for _, d := range depts {
 			ids = append(ids, d.ID)
 		}
-		// fetch collaborators in these departments
+
+		// Fetch collaborators in these departments
 		var colabs []ColaboradorSummary
 		if len(ids) > 0 {
 			if err := db.Table("colaboradores").Where("departamento_id IN ?", ids).Find(&colabs).Error; err != nil {

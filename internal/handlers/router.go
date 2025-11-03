@@ -1,18 +1,18 @@
+// internal/handlers/router.go
 package handlers
 
 import (
+	_ "github.com/danubiobwm/company-api/docs"
 	"github.com/danubiobwm/company-api/internal/repositories"
 	"github.com/danubiobwm/company-api/internal/services"
 	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 )
 
 func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	api := r.Group("/api/v1")
 
-	// Health check simples
+	// Health check
 	api.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
 	})
@@ -32,7 +32,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	// Registrar rotas
 	deptHandler.RegisterRoutes(api)
 	colabHandler.RegisterRoutes(api)
-	// Swagger
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	// Registrar rotas do Swagger
+	RegisterSwaggerRoutes(r)
 }

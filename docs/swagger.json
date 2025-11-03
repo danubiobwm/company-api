@@ -1,22 +1,10 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "API REST para gerenciamento de colaboradores e departamentos.",
-        "title": "Company API",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "Danubio Backend Team",
-            "email": "suporte@company.com"
-        },
-        "license": {
-            "name": "MIT"
-        },
-        "version": "1.0"
+        "contact": {}
     },
-    "host": "localhost:8080",
-    "basePath": "/api/v1",
     "paths": {
-        "/colaboradores": {
+        "/api/v1/colaboradores": {
             "get": {
                 "description": "Get a paginated list of colaboradores with optional filtering",
                 "consumes": [
@@ -115,7 +103,7 @@
                 }
             }
         },
-        "/colaboradores/{id}": {
+        "/api/v1/colaboradores/{id}": {
             "get": {
                 "description": "Get detailed information about a specific colaborador",
                 "consumes": [
@@ -276,7 +264,7 @@
                 }
             }
         },
-        "/departamentos": {
+        "/api/v1/departamentos": {
             "get": {
                 "description": "Get a list of all departamentos",
                 "consumes": [
@@ -300,9 +288,12 @@
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Erro interno",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -338,21 +329,27 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Erro de validação",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "422": {
-                        "description": "Unprocessable Entity",
+                        "description": "Entidade não processável",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
             }
         },
-        "/departamentos/{id}": {
+        "/api/v1/departamentos/{id}": {
             "get": {
                 "description": "Get detailed information about a specific departamento",
                 "consumes": [
@@ -382,21 +379,30 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "ID inválido",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "404": {
-                        "description": "Not Found",
+                        "description": "Departamento não encontrado",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Erro interno",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -439,15 +445,21 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Erro de validação",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "422": {
-                        "description": "Unprocessable Entity",
+                        "description": "Entidade não processável",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -478,21 +490,27 @@
                         "description": "No Content"
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "ID inválido",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Erro interno",
                         "schema": {
-                            "$ref": "#/definitions/handlers.ErrorResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
             }
         },
-        "/gerentes/{id}/colaboradores": {
+        "/api/v1/gerentes/{id}/colaboradores": {
             "get": {
                 "description": "Get all colaboradores under a gerente's department hierarchy (including sub-departments)",
                 "consumes": [
@@ -542,7 +560,7 @@
                 }
             }
         },
-        "/health": {
+        "/api/v1/health": {
             "get": {
                 "description": "Retorna o status de saúde da API",
                 "produces": [

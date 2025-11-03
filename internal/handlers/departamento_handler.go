@@ -33,8 +33,8 @@ func (h *DepartamentoHandler) RegisterRoutes(rg *gin.RouterGroup) {
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.Departamento
-// @Failure 500 {object} ErrorResponse
-// @Router /departamentos [get]
+// @Failure 500 {object} map[string]string "Erro interno"
+// @Router /api/v1/departamentos [get]
 func (h *DepartamentoHandler) GetAll(c *gin.Context) {
 	depts, err := h.service.GetAll()
 	if err != nil {
@@ -52,10 +52,10 @@ func (h *DepartamentoHandler) GetAll(c *gin.Context) {
 // @Produce json
 // @Param id path string true "Departamento ID (UUID)"
 // @Success 200 {object} models.Departamento
-// @Failure 400 {object} ErrorResponse
-// @Failure 404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
-// @Router /departamentos/{id} [get]
+// @Failure 400 {object} map[string]string "ID inválido"
+// @Failure 404 {object} map[string]string "Departamento não encontrado"
+// @Failure 500 {object} map[string]string "Erro interno"
+// @Router /api/v1/departamentos/{id} [get]
 func (h *DepartamentoHandler) GetByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -84,9 +84,9 @@ func (h *DepartamentoHandler) GetByID(c *gin.Context) {
 // @Produce json
 // @Param departamento body models.Departamento true "Departamento data"
 // @Success 201 {object} models.Departamento
-// @Failure 400 {object} ErrorResponse
-// @Failure 422 {object} ErrorResponse
-// @Router /departamentos [post]
+// @Failure 400 {object} map[string]string "Erro de validação"
+// @Failure 422 {object} map[string]string "Entidade não processável"
+// @Router /api/v1/departamentos [post]
 func (h *DepartamentoHandler) Create(c *gin.Context) {
 	var dept models.Departamento
 	if err := c.ShouldBindJSON(&dept); err != nil {
@@ -110,9 +110,9 @@ func (h *DepartamentoHandler) Create(c *gin.Context) {
 // @Param id path string true "Departamento ID (UUID)"
 // @Param departamento body models.Departamento true "Departamento data"
 // @Success 200 {object} models.Departamento
-// @Failure 400 {object} ErrorResponse
-// @Failure 422 {object} ErrorResponse
-// @Router /departamentos/{id} [put]
+// @Failure 400 {object} map[string]string "Erro de validação"
+// @Failure 422 {object} map[string]string "Entidade não processável"
+// @Router /api/v1/departamentos/{id} [put]
 func (h *DepartamentoHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -142,10 +142,10 @@ func (h *DepartamentoHandler) Update(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path string true "Departamento ID (UUID)"
-// @Success 204
-// @Failure 400 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
-// @Router /departamentos/{id} [delete]
+// @Success 204 "No Content"
+// @Failure 400 {object} map[string]string "ID inválido"
+// @Failure 500 {object} map[string]string "Erro interno"
+// @Router /api/v1/departamentos/{id} [delete]
 func (h *DepartamentoHandler) Delete(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
