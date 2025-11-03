@@ -33,6 +33,9 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	deptHandler.RegisterRoutes(api)
 	colabHandler.RegisterRoutes(api)
 
+	// Registrar rotas do Gerente
+	RegisterGerenteRoutes(api, db)
+
 	// Registrar rotas do Swagger
 	RegisterSwaggerRoutes(r)
 }

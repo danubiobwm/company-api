@@ -36,7 +36,7 @@ type ErrorResponse struct {
 }
 
 // RegisterGerentesRoutes registra as rotas relacionadas a gerentes
-func RegisterGerentesRoutes(rg *gin.RouterGroup, db *gorm.DB) {
+func RegisterGerenteRoutes(rg *gin.RouterGroup, db *gorm.DB) {
 	rg.GET("/gerentes/:id/colaboradores", getGerenteColaboradores(db))
 }
 
@@ -60,14 +60,20 @@ func getGerenteColaboradores(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		// Find the department where this gerente_id is set
-		var deptID uuid.UUID
-		if err := db.Raw("SELECT id FROM departamentos WHERE gerente_id = ? LIMIT 1", gerenteID).Scan(&deptID).Error; err != nil {
+		// find department where this gerente_id is set
+		var deptIDStr string
+		if err := db.Raw("SELECT id FROM departamentos WHERE gerente_id = ? LIMIT 1", gerenteID).Scan(&deptIDStr).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		if deptID == uuid.Nil {
+		if deptIDStr == "" {
 			c.JSON(http.StatusNotFound, gin.H{"error": "gerente não vinculado a nenhum departamento"})
+			return
+		}
+
+		deptID, err := uuid.Parse(deptIDStr)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao converter id de departamento"})
 			return
 		}
 
