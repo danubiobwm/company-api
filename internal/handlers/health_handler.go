@@ -1,18 +1,33 @@
 package handlers
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+// HealthResponse representa o formato de resposta do endpoint de health check.
+// @Description Estrutura retornada pelo health check
+type HealthResponse struct {
+	Status string `json:"status" example:"ok"`
+}
+
+// HealthHandler lida com o endpoint /health
+type HealthHandler struct{}
+
+// RegisterRoutes registra as rotas de health check
+func (h *HealthHandler) RegisterRoutes(rg *gin.RouterGroup) {
+	r := rg.Group("/health")
+	r.GET("", h.HealthCheck)
+}
 
 // HealthCheck godoc
 // @Summary Health check
-// @Description Check if the API service is running and healthy
+// @Description Retorna o status de saúde da API
 // @Tags health
-// @Accept json
 // @Produce json
 // @Success 200 {object} HealthResponse
-// @Failure 503 {object} ErrorResponse
 // @Router /health [get]
-func registerHealthRoutes(r *gin.Engine) {
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "ok"})
-	})
+func (h *HealthHandler) HealthCheck(c *gin.Context) {
+	c.JSON(http.StatusOK, HealthResponse{Status: "ok"})
 }

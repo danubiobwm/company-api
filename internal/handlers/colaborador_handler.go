@@ -34,8 +34,8 @@ func (h *ColaboradorHandler) RegisterRoutes(rg *gin.RouterGroup) {
 // @Produce json
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Items per page" default(100)
-// @Success 200 {object} ColaboradorListResponse
-// @Failure 500 {object} ErrorResponse
+// @Success 200 {object} map[string]interface{} "Lista de colaboradores e total"
+// @Failure 500 {object} map[string]string "Erro interno"
 // @Router /colaboradores [get]
 func (h *ColaboradorHandler) GetAll(c *gin.Context) {
 	filters := make(map[string]interface{})
@@ -58,9 +58,9 @@ func (h *ColaboradorHandler) GetAll(c *gin.Context) {
 // @Produce json
 // @Param id path string true "Colaborador ID (UUID)"
 // @Success 200 {object} models.Colaborador
-// @Failure 400 {object} ErrorResponse
-// @Failure 404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 400 {object} map[string]string "ID inválido"
+// @Failure 404 {object} map[string]string "Colaborador não encontrado"
+// @Failure 500 {object} map[string]string "Erro interno"
 // @Router /colaboradores/{id} [get]
 func (h *ColaboradorHandler) GetByID(c *gin.Context) {
 	idStr := c.Param("id")
@@ -90,8 +90,8 @@ func (h *ColaboradorHandler) GetByID(c *gin.Context) {
 // @Produce json
 // @Param colaborador body models.Colaborador true "Colaborador data"
 // @Success 201 {object} models.Colaborador
-// @Failure 400 {object} ErrorResponse
-// @Failure 422 {object} ErrorResponse
+// @Failure 400 {object} map[string]string "Erro de validação"
+// @Failure 422 {object} map[string]string "Entidade não processável"
 // @Router /colaboradores [post]
 func (h *ColaboradorHandler) Create(c *gin.Context) {
 	var colab models.Colaborador
@@ -116,8 +116,8 @@ func (h *ColaboradorHandler) Create(c *gin.Context) {
 // @Param id path string true "Colaborador ID (UUID)"
 // @Param colaborador body models.Colaborador true "Colaborador data"
 // @Success 200 {object} models.Colaborador
-// @Failure 400 {object} ErrorResponse
-// @Failure 422 {object} ErrorResponse
+// @Failure 400 {object} map[string]string "Erro de validação"
+// @Failure 422 {object} map[string]string "Entidade não processável"
 // @Router /colaboradores/{id} [put]
 func (h *ColaboradorHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
@@ -148,9 +148,9 @@ func (h *ColaboradorHandler) Update(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path string true "Colaborador ID (UUID)"
-// @Success 204
-// @Failure 400 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Success 204 "No Content"
+// @Failure 400 {object} map[string]string "ID inválido"
+// @Failure 500 {object} map[string]string "Erro interno"
 // @Router /colaboradores/{id} [delete]
 func (h *ColaboradorHandler) Delete(c *gin.Context) {
 	idStr := c.Param("id")

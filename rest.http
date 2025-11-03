@@ -4,11 +4,7 @@ Content-Type: application/json
 
 ###
 
-### Listar todos os departamentos
-GET http://localhost:8080/api/v1/departamentos
-Content-Type: application/json
 
-###
 
 ### Buscar departamento por ID (Tecnologia da Informação)
 GET http://localhost:8080/api/v1/departamentos/018f3c3e-5c79-7b21-b7e1-d45f80cfa5ac
@@ -24,6 +20,11 @@ Content-Type: application/json
   "nome": "Financeiro",
   "descricao": "Departamento responsável pelas finanças da empresa"
 }
+
+###
+
+### Listar departamentos
+GET http://localhost:8080/api/v1/departamentos
 
 ###
 

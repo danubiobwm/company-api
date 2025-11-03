@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	_ "github.com/danubiobwm/company-api/docs"
 	"github.com/danubiobwm/company-api/internal/handlers"
 	"github.com/danubiobwm/company-api/internal/repositories"
 	"github.com/gin-gonic/gin"
@@ -14,15 +15,11 @@ import (
 
 // @title Company API
 // @version 1.0
-// @description This is a sample company management API
+// @description API REST para gerenciamento de colaboradores e departamentos.
 // @termsOfService http://swagger.io/terms/
-
-// @contact.name API Support
-// @contact.email support@company.com
-
+// @contact.name Danubio Backend Team
+// @contact.email suporte@company.com
 // @license.name MIT
-// @license.url https://opensource.org/licenses/MIT
-
 // @host localhost:8080
 // @BasePath /api/v1
 func main() {

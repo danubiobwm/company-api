@@ -1,14 +1,470 @@
 basePath: /api/v1
+definitions:
+  handlers.ColaboradorSummary:
+    properties:
+      departamento_id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      email:
+        example: john.doe@company.com
+        type: string
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      name:
+        example: John Doe
+        type: string
+    type: object
+  handlers.DepartamentoHierarchy:
+    properties:
+      id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      nome:
+        example: Technology Department
+        type: string
+    type: object
+  handlers.ErrorResponse:
+    properties:
+      error:
+        example: Bad Request
+        type: string
+      message:
+        example: Invalid input data
+        type: string
+    type: object
+  handlers.GerenteColaboradoresResponse:
+    properties:
+      colaboradores:
+        items:
+          $ref: '#/definitions/handlers.ColaboradorSummary'
+        type: array
+      departamentos:
+        items:
+          $ref: '#/definitions/handlers.DepartamentoHierarchy'
+        type: array
+      gerente_id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+    type: object
+  handlers.HealthResponse:
+    description: Estrutura retornada pelo health check
+    properties:
+      status:
+        example: ok
+        type: string
+    type: object
+  models.Colaborador:
+    properties:
+      cpf:
+        type: string
+      created_at:
+        type: string
+      departamento_id:
+        type: string
+      id:
+        type: string
+      nome:
+        type: string
+      rg:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.Departamento:
+    properties:
+      created_at:
+        type: string
+      departamento_superior_id:
+        type: string
+      descricao:
+        type: string
+      gerente:
+        allOf:
+        - $ref: '#/definitions/models.Colaborador'
+        description: relations (for preload)
+      gerente_id:
+        type: string
+      id:
+        type: string
+      nome:
+        type: string
+      updated_at:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
-    email: support@company.com
-    name: API Support
-  description: This is a sample company management API
+    email: suporte@company.com
+    name: Danubio Backend Team
+  description: API REST para gerenciamento de colaboradores e departamentos.
   license:
     name: MIT
-    url: https://opensource.org/licenses/MIT
   termsOfService: http://swagger.io/terms/
+  title: Company API
   version: "1.0"
-paths: {}
+paths:
+  /colaboradores:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of colaboradores with optional filtering
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 100
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de colaboradores e total
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Erro interno
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List all colaboradores
+      tags:
+      - colaboradores
+    post:
+      consumes:
+      - application/json
+      description: Create a new colaborador with the provided data
+      parameters:
+      - description: Colaborador data
+        in: body
+        name: colaborador
+        required: true
+        schema:
+          $ref: '#/definitions/models.Colaborador'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Colaborador'
+        "400":
+          description: Erro de validação
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "422":
+          description: Entidade não processável
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new colaborador
+      tags:
+      - colaboradores
+  /colaboradores/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a colaborador by ID
+      parameters:
+      - description: Colaborador ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: ID inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Erro interno
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a colaborador
+      tags:
+      - colaboradores
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information about a specific colaborador
+      parameters:
+      - description: Colaborador ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Colaborador'
+        "400":
+          description: ID inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Colaborador não encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Erro interno
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get colaborador by ID
+      tags:
+      - colaboradores
+    put:
+      consumes:
+      - application/json
+      description: Update an existing colaborador by ID
+      parameters:
+      - description: Colaborador ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Colaborador data
+        in: body
+        name: colaborador
+        required: true
+        schema:
+          $ref: '#/definitions/models.Colaborador'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Colaborador'
+        "400":
+          description: Erro de validação
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "422":
+          description: Entidade não processável
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a colaborador
+      tags:
+      - colaboradores
+  /departamentos:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all departamentos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Departamento'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: List all departamentos
+      tags:
+      - departamentos
+    post:
+      consumes:
+      - application/json
+      description: Create a new departamento with the provided data
+      parameters:
+      - description: Departamento data
+        in: body
+        name: departamento
+        required: true
+        schema:
+          $ref: '#/definitions/models.Departamento'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Departamento'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: Create a new departamento
+      tags:
+      - departamentos
+  /departamentos/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a departamento by ID
+      parameters:
+      - description: Departamento ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: Delete a departamento
+      tags:
+      - departamentos
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information about a specific departamento
+      parameters:
+      - description: Departamento ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Departamento'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: Get departamento by ID
+      tags:
+      - departamentos
+    put:
+      consumes:
+      - application/json
+      description: Update an existing departamento by ID
+      parameters:
+      - description: Departamento ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Departamento data
+        in: body
+        name: departamento
+        required: true
+        schema:
+          $ref: '#/definitions/models.Departamento'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Departamento'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: Update a departamento
+      tags:
+      - departamentos
+  /gerentes/{id}/colaboradores:
+    get:
+      consumes:
+      - application/json
+      description: Get all colaboradores under a gerente's department hierarchy (including
+        sub-departments)
+      parameters:
+      - description: Gerente ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.GerenteColaboradoresResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: Get colaboradores under gerente's hierarchy
+      tags:
+      - gerentes
+  /health:
+    get:
+      description: Retorna o status de saúde da API
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.HealthResponse'
+      summary: Health check
+      tags:
+      - health
 swagger: "2.0"
