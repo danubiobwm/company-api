@@ -26,7 +26,17 @@ func (h *ColaboradorHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/:id", h.Delete)
 }
 
-// GET /colaboradores
+// GetAll godoc
+// @Summary List all colaboradores
+// @Description Get a paginated list of colaboradores with optional filtering
+// @Tags colaboradores
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Items per page" default(100)
+// @Success 200 {object} ColaboradorListResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /colaboradores [get]
 func (h *ColaboradorHandler) GetAll(c *gin.Context) {
 	filters := make(map[string]interface{})
 	colabs, total, err := h.service.List(filters, 1, 100)
@@ -40,7 +50,18 @@ func (h *ColaboradorHandler) GetAll(c *gin.Context) {
 	})
 }
 
-// GET /colaboradores/:id
+// GetByID godoc
+// @Summary Get colaborador by ID
+// @Description Get detailed information about a specific colaborador
+// @Tags colaboradores
+// @Accept json
+// @Produce json
+// @Param id path string true "Colaborador ID (UUID)"
+// @Success 200 {object} models.Colaborador
+// @Failure 400 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /colaboradores/{id} [get]
 func (h *ColaboradorHandler) GetByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -61,7 +82,17 @@ func (h *ColaboradorHandler) GetByID(c *gin.Context) {
 	c.JSON(http.StatusOK, colab)
 }
 
-// POST /colaboradores
+// Create godoc
+// @Summary Create a new colaborador
+// @Description Create a new colaborador with the provided data
+// @Tags colaboradores
+// @Accept json
+// @Produce json
+// @Param colaborador body models.Colaborador true "Colaborador data"
+// @Success 201 {object} models.Colaborador
+// @Failure 400 {object} ErrorResponse
+// @Failure 422 {object} ErrorResponse
+// @Router /colaboradores [post]
 func (h *ColaboradorHandler) Create(c *gin.Context) {
 	var colab models.Colaborador
 	if err := c.ShouldBindJSON(&colab); err != nil {
@@ -76,7 +107,18 @@ func (h *ColaboradorHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, colab)
 }
 
-// PUT /colaboradores/:id
+// Update godoc
+// @Summary Update a colaborador
+// @Description Update an existing colaborador by ID
+// @Tags colaboradores
+// @Accept json
+// @Produce json
+// @Param id path string true "Colaborador ID (UUID)"
+// @Param colaborador body models.Colaborador true "Colaborador data"
+// @Success 200 {object} models.Colaborador
+// @Failure 400 {object} ErrorResponse
+// @Failure 422 {object} ErrorResponse
+// @Router /colaboradores/{id} [put]
 func (h *ColaboradorHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -99,7 +141,17 @@ func (h *ColaboradorHandler) Update(c *gin.Context) {
 	c.JSON(http.StatusOK, colab)
 }
 
-// DELETE /colaboradores/:id
+// Delete godoc
+// @Summary Delete a colaborador
+// @Description Delete a colaborador by ID
+// @Tags colaboradores
+// @Accept json
+// @Produce json
+// @Param id path string true "Colaborador ID (UUID)"
+// @Success 204
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /colaboradores/{id} [delete]
 func (h *ColaboradorHandler) Delete(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)

@@ -12,6 +12,19 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title Company API
+// @version 1.0
+// @description This is a sample company management API
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.email support@company.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8080
+// @BasePath /api/v1
 func main() {
 	port := os.Getenv("APP_PORT")
 	if port == "" {
@@ -33,7 +46,14 @@ func main() {
 	}
 
 	r := gin.Default()
-	// health
+	// HealthCheck godoc
+	// @Summary Health check
+	// @Description Check if the API is running
+	// @Tags health
+	// @Accept json
+	// @Produce json
+	// @Success 200 {object} map[string]string
+	// @Router /health [get]
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
 	})

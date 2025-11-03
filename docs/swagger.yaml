@@ -1,4 +1,14 @@
+basePath: /api/v1
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    email: support@company.com
+    name: API Support
+  description: This is a sample company management API
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  version: "1.0"
 paths: {}
 swagger: "2.0"

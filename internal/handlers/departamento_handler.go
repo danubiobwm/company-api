@@ -26,7 +26,15 @@ func (h *DepartamentoHandler) RegisterRoutes(rg *gin.RouterGroup) {
 	r.DELETE("/:id", h.Delete)
 }
 
-// GET /departamentos
+// GetAll godoc
+// @Summary List all departamentos
+// @Description Get a list of all departamentos
+// @Tags departamentos
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.Departamento
+// @Failure 500 {object} ErrorResponse
+// @Router /departamentos [get]
 func (h *DepartamentoHandler) GetAll(c *gin.Context) {
 	depts, err := h.service.GetAll()
 	if err != nil {
@@ -36,7 +44,18 @@ func (h *DepartamentoHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, depts)
 }
 
-// GET /departamentos/:id
+// GetByID godoc
+// @Summary Get departamento by ID
+// @Description Get detailed information about a specific departamento
+// @Tags departamentos
+// @Accept json
+// @Produce json
+// @Param id path string true "Departamento ID (UUID)"
+// @Success 200 {object} models.Departamento
+// @Failure 400 {object} ErrorResponse
+// @Failure 404 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /departamentos/{id} [get]
 func (h *DepartamentoHandler) GetByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -57,7 +76,17 @@ func (h *DepartamentoHandler) GetByID(c *gin.Context) {
 	c.JSON(http.StatusOK, dept)
 }
 
-// POST /departamentos
+// Create godoc
+// @Summary Create a new departamento
+// @Description Create a new departamento with the provided data
+// @Tags departamentos
+// @Accept json
+// @Produce json
+// @Param departamento body models.Departamento true "Departamento data"
+// @Success 201 {object} models.Departamento
+// @Failure 400 {object} ErrorResponse
+// @Failure 422 {object} ErrorResponse
+// @Router /departamentos [post]
 func (h *DepartamentoHandler) Create(c *gin.Context) {
 	var dept models.Departamento
 	if err := c.ShouldBindJSON(&dept); err != nil {
@@ -72,7 +101,18 @@ func (h *DepartamentoHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, dept)
 }
 
-// PUT /departamentos/:id
+// Update godoc
+// @Summary Update a departamento
+// @Description Update an existing departamento by ID
+// @Tags departamentos
+// @Accept json
+// @Produce json
+// @Param id path string true "Departamento ID (UUID)"
+// @Param departamento body models.Departamento true "Departamento data"
+// @Success 200 {object} models.Departamento
+// @Failure 400 {object} ErrorResponse
+// @Failure 422 {object} ErrorResponse
+// @Router /departamentos/{id} [put]
 func (h *DepartamentoHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -95,7 +135,17 @@ func (h *DepartamentoHandler) Update(c *gin.Context) {
 	c.JSON(http.StatusOK, dept)
 }
 
-// DELETE /departamentos/:id
+// Delete godoc
+// @Summary Delete a departamento
+// @Description Delete a departamento by ID
+// @Tags departamentos
+// @Accept json
+// @Produce json
+// @Param id path string true "Departamento ID (UUID)"
+// @Success 204
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /departamentos/{id} [delete]
 func (h *DepartamentoHandler) Delete(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
