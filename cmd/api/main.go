@@ -13,6 +13,12 @@ import (
 	"gorm.io/gorm"
 )
 
+// @title Company API
+// @version 1.0
+// @description API para gerenciar colaboradores e departamentos
+// @host localhost:8080
+// @BasePath /api/v1
+
 type Config struct {
 	AppPort string
 	DB      repositories.DBConfig

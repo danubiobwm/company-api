@@ -1,4 +1,3 @@
-// internal/handlers/router.go
 package handlers
 
 import (
