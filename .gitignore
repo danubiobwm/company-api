@@ -1,0 +1,58 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go build artifacts
+bin/
+build/
+dist/
+*.log
+
+# Dependency directories (for Go modules)
+vendor/
+
+# Configuration files
+.env
+.env.local
+.env.*.local
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Swagger auto-generated docs
+docs/swagger.json
+docs/swagger.yaml
+
+# Database / local data
+*.db
+*.sqlite
+tmp/
+data/
+
+# Coverage and test output
+coverage.*
+*.coverprofile
+*.cov
+*.lcov
+
+# Docker
+docker-compose.override.yml
+*.pid
+
+# Uploads or runtime-generated content
+uploads/
+public/uploads/
